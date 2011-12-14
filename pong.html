@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pong-spel</title>
+    <link href="pong.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+<svg version="1.1"
+    baseProfile="full"
+    xmlns="http://www.w3.org/2000/svg"
+    width="1200"
+    height="600"
+    viewport="100 100 800 600">
+  <defs>
+  </defs>
+  <rect x="100" y="50" height="550" width="1200" id="plan"/>
+  <rect x="150" y="275" height="100" width="15" id="paddel1" />
+  <rect x="1125" y="275" height="100" width="15" id="paddel2"  />
+  <polyline points="100,51 1200,51" class="ram" />
+  <polyline points="100,600 1200,600" class="ram" />
+  <rect x="250" y="275" height="10" width="10" id="boll" />      
+  <line y1="50" x1="650" y2="600" x2="650" id="mitt" />
+</svg>
+<script>
+    window.onkeydown = function (e) {
+    var rpad = document.getElementById("paddel2");
+    var lpad = document.getElementById("paddel1");
+    var ball = document.getElementById("boll");
+    var rpad_y = rpad.getAttribute("y");
+    var lpad_y = lpad.getAttribute("y");
+        switch(e.keyCode) {
+        case 38:
+            rpad.setAttribute("y", rpad_y - 10);
+            console.log(rpad_y);
+            break;
+
+        case 40:
+            rpad.setAttribute("y", +rpad_y + 10);
+            console.log(rpad_y);
+            break;
+
+        case 87:
+            lpad.setAttribute("y", lpad_y - 10);
+            console.log(lpad_y);
+            break;
+
+        case 83:
+            lpad.setAttribute("y", +lpad_y + 10);
+            console.log(lpad_y);
+            break;
+      }
+}
+</script>
+</body>
+</html>
