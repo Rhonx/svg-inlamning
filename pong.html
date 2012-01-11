@@ -16,42 +16,91 @@
   <rect x="100" y="50" height="550" width="1200" id="plan"/>
   <rect x="150" y="275" height="100" width="15" id="paddel1" />
   <rect x="1125" y="275" height="100" width="15" id="paddel2"  />
-  <polyline points="100,51 1200,51" class="ram" />
+  <polyline points="100,50 1200,50" class="ram" />
   <polyline points="100,600 1200,600" class="ram" />
   <rect x="250" y="275" height="10" width="10" id="boll" />      
   <line y1="50" x1="650" y2="600" x2="650" id="mitt" />
 </svg>
 <script>
-    window.onkeydown = function (e) {
+window.onkeydown = function (e) {
     var rpad = document.getElementById("paddel2");
     var lpad = document.getElementById("paddel1");
     var ball = document.getElementById("boll");
-    var rpad_y = rpad.getAttribute("y");
-    var lpad_y = lpad.getAttribute("y");
+    rpad_y = rpad.getAttribute("y");
+    lpad_y = lpad.getAttribute("y");
         switch(e.keyCode) {
         case 38:
-            rpad.setAttribute("y", rpad_y - 10);
-            console.log(rpad_y);
+            if (rpad_y >= 65) {
+                rpad.setAttribute("y", rpad_y - 20);
+            }
             break;
+            
 
         case 40:
-            rpad.setAttribute("y", +rpad_y + 10);
-            console.log(rpad_y);
+            if (rpad_y <= 495) {
+                rpad.setAttribute("y", +rpad_y + 20);
+            }
             break;
-
         case 87:
-            lpad.setAttribute("y", lpad_y - 10);
-            console.log(lpad_y);
+            if (lpad_y >= 65) {
+                lpad.setAttribute("y", lpad_y - 20);
+            }
             break;
-
         case 83:
-            lpad.setAttribute("y", +lpad_y + 10);
-            console.log(lpad_y);
+            if (lpad_y <= 495) {
+                lpad.setAttribute("y", +lpad_y + 20);
+            }
             break;
       }
       return false;
       // Gunther was here (testing)
+};
+var boll = {
+    x : 650,
+    y : 350,
+    xspeed: 3,
+    yspeed: 4,
+    totspeed : 5,
+    svgboll : document.getElementById("boll"),
+    inplay : true
 }
+function flytta_boll () {
+    if ( boll.x < 165 ) {
+        if ( boll.inplay &&  boll.y >= lpad_y && boll.y < (+lpad_y + 100) ) {
+            var hitpoint = boll.y - lpad_y - 50;
+            // mellan 20 och 70 grader
+            console.log(hitpoint + " " + Number(hitpoint*6/5) + 90);
+            hitpoint = Math.PI * ((hitpoint*6/5) + 90) / 180; 
+            boll.xspeed = Math.sin(hitpoint) * boll.totspeed;
+            boll.yspeed = Math.cos(hitpoint) * boll.totspeed;
+        } else {
+            // Vänster spelare missar
+            boll.inplay = false;
+            return false;
+        }
+    } else if ( boll.x > 500 ) {
+        // Höger miss
+        boll.xspeed = -Math.abs(boll.xspeed);
+    }
+    if ( boll.y < 50 ) {
+        // studs uppe
+        boll.yspeed = Math.abs(boll.yspeed);
+    } else if ( boll.y > 600 ) {
+        // Studs nere
+        boll.yspeed = -Math.abs(boll.yspeed);
+    }
+    boll.x += boll.xspeed;
+    boll.y += boll.yspeed;
+    boll.svgboll.setAttribute("x", boll.x);
+    boll.svgboll.setAttribute("y", boll.y);
+    window.setTimeout(flytta_boll, 20);
+}
+flytta_boll();
+function speedup() {
+    boll.xspeed *= 1.5;
+    boll.yspeed *= 1.5;
+}
+//window.setInterval(speedup, 1000);
 </script>
 </body>
 </html>
