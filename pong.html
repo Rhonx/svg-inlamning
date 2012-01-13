@@ -65,14 +65,15 @@ var boll = {
     inplay : true
 }
 function flytta_boll () {
-    if ( boll.x < 165 ) {
-        if ( boll.inplay &&  boll.y >= lpad_y && boll.y < (+lpad_y + 100) ) {
-            var hitpoint = boll.y - lpad_y - 50;
+    if ( boll.x < 165 && boll.xspeed < 0 ) {
+        if ( boll.inplay && (boll.xspeed < 0) &&  (+boll.y + 10) >= lpad_y && boll.y < (+lpad_y + 100) ) {
+            var hitpoint = boll.y - lpad_y - 45;
             // mellan 20 och 70 grader
-            console.log(hitpoint + " " + Number(hitpoint*6/5) + 90);
-            hitpoint = Math.PI * ((hitpoint*6/5) + 90) / 180; 
-            boll.xspeed = Math.sin(hitpoint) * boll.totspeed;
-            boll.yspeed = Math.cos(hitpoint) * boll.totspeed;
+            console.log(boll.y + " " + lpad_y);
+            console.log(hitpoint + " " + 180 * Math.PI * hitpoint / 150);
+            hitpoint = Math.PI * hitpoint / 150;
+            boll.xspeed = Math.cos(hitpoint) * boll.totspeed;
+            boll.yspeed = Math.sin(hitpoint) * boll.totspeed;
         } else {
             // Vänster spelare missar
             boll.inplay = false;
@@ -85,7 +86,7 @@ function flytta_boll () {
     if ( boll.y < 50 ) {
         // studs uppe
         boll.yspeed = Math.abs(boll.yspeed);
-    } else if ( boll.y > 600 ) {
+    } else if ( boll.y > 300 ) {
         // Studs nere
         boll.yspeed = -Math.abs(boll.yspeed);
     }
