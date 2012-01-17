@@ -1,24 +1,25 @@
 #plan {
         stroke: white;
         fill: black;
-}
+    }
 #mitt {
-        stroke: #00FF00;
-        fill: #00FF00;
-}
+            stroke: #00FF00;
+            fill: #00FF00;
+    }
 #paddel1 {
-        stroke: #00FF00;
-        fill: #00FF00;
-}
+            stroke: #00FF00;
+            fill: #00FF00;
+    }
 #paddel2 {
-        stroke: #00FF00;
-        fill: #00FF00;
-}
+            stroke: #00FF00;
+            fill: #00FF00;
+    }
 .ram {
-        stroke: #00FF00;
-        fill: #00FF00; 
-} 
+            stroke: #00FF00;
+            fill: transparent;
+    }
 #boll {
-        stroke: #00FF00;
-        fill: #00FF00;
-}
+            stroke: #00FF00;
+            fill: #00FF00;
+    }
+svg { outline: 1px solid red; }

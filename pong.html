@@ -21,39 +21,65 @@
   <rect x="250" y="275" height="10" width="10" id="boll" />      
   <line y1="50" x1="650" y2="600" x2="650" id="mitt" />
 </svg>
+<div id="debug">
+</div>  
 <script>
+var lpad = {
+    y : 275,
+    speed : 0,
+    dom  : document.getElementById("paddel1"),
+    ymax : 500,
+    ymin : 60
+};
+var rpad = {
+    y : 275,
+    speed : 0,
+    dom  : document.getElementById("paddel2"),
+    ymax : 500,
+    ymin : 60,
+};
 window.onkeydown = function (e) {
-    var rpad = document.getElementById("paddel2");
-    var lpad = document.getElementById("paddel1");
-    var ball = document.getElementById("boll");
-    rpad_y = rpad.getAttribute("y");
-    lpad_y = lpad.getAttribute("y");
         switch(e.keyCode) {
         case 38:
-            if (rpad_y >= 65) {
-                rpad.setAttribute("y", rpad_y - 20);
-            }
-            break;
-            
-
+        if (rpad.y >= rpad.ymin) {
+            rpad.speed = (rpad.speed > 0 ) ? 0 : rpad.speed - 8;
+        } else {
+            rpad.speed = 0;
+            rpad.y = rpad.ymin;
+        }
+        break;
         case 40:
-            if (rpad_y <= 495) {
-                rpad.setAttribute("y", +rpad_y + 20);
-            }
-            break;
+        if (rpad.y <= rpad.ymax) {
+            rpad.speed = (rpad.speed < 0 ) ? 0 : rpad.speed + 8;
+        } else {
+            rpad.speed = 0;
+            rpad.y = rpad.ymax;
+        }
+        break;
+
         case 87:
-            if (lpad_y >= 65) {
-                lpad.setAttribute("y", lpad_y - 20);
-            }
-            break;
+        if (lpad.y >= lpad.ymin) {
+            // Om paddeln är på väg åt andra hållet stanna den
+            // annars öka farten
+            lpad.speed = (lpad.speed > 0 ) ? 0 : lpad.speed - 8;
+        } else {
+            lpad.speed = 0;
+            lpad.y = lpad.ymin;
+        }
+        break;
         case 83:
-            if (lpad_y <= 495) {
-                lpad.setAttribute("y", +lpad_y + 20);
-            }
-            break;
-      }
-      return false;
-      // Gunther was here (testing)
+        if (lpad.y <= lpad.ymax) {
+            lpad.speed = (lpad.speed < 0 ) ? 0 : lpad.speed + 8;
+        } else {
+            rpad.speed = 0;
+            rpad.y = rpad.ymax;
+        }
+        break;
+    }
+    // lpad.dom.setAttribute("y", lpad.y);
+    // rpad.dom.setAttribute("y", rpad.y);
+    // return false;
+    // Gunther was here (testing)
 };
 var boll = {
     x : 650,
@@ -63,30 +89,44 @@ var boll = {
     totspeed : 5,
     svgboll : document.getElementById("boll"),
     inplay : true
+};
+var debug = document.getElementById("debug");
+
+function flytta_paddel () {
+    lpad.y += lpad.speed;
+    lpad.dom.setAttribute("y", lpad.y);
+    lpad.speed /= 1.2;
+    lpad.speed = Math.abs(lpad.speed) < 0.6 ? 0 : lpad.speed;
+    rpad.y += rpad.speed;
+    rpad.dom.setAttribute("y", rpad.y);
+    rpad.speed /= 1.2;
+    rpad.speed = Math.abs(rpad.speed) < 0.6 ? 0 : rpad.speed;
+    
+
+    //Kollissionsdetektorn
+    if ( boll.x < 125 ) {
+        return false;
 }
-function flytta_boll () {
-    if ( boll.x < 165 && boll.xspeed < 0 ) {
-        if ( boll.inplay && (boll.xspeed < 0) &&  (+boll.y + 10) >= lpad_y && boll.y < (+lpad_y + 100) ) {
-            var hitpoint = boll.y - lpad_y - 45;
+  if ( boll.x < 165 && boll.xspeed < 0 ) {
+        if ( boll.inplay && (boll.xspeed < 0) &&  (+boll.y + 10) >= lpad.y && boll.y < (+lpad.y + 100) ) {
+            var hitpoint = boll.y - lpad.y - 45;
+            debug.innerHTML = hitpoint;
             // mellan 20 och 70 grader
-            console.log(boll.y + " " + lpad_y);
-            console.log(hitpoint + " " + 180 * Math.PI * hitpoint / 150);
             hitpoint = Math.PI * hitpoint / 150;
             boll.xspeed = Math.cos(hitpoint) * boll.totspeed;
             boll.yspeed = Math.sin(hitpoint) * boll.totspeed;
         } else {
             // Vänster spelare missar
             boll.inplay = false;
-            return false;
         }
-    } else if ( boll.x > 500 ) {
+    } else if ( boll.x > 1200 ) {
         // Höger miss
         boll.xspeed = -Math.abs(boll.xspeed);
     }
     if ( boll.y < 50 ) {
         // studs uppe
         boll.yspeed = Math.abs(boll.yspeed);
-    } else if ( boll.y > 300 ) {
+    } else if ( boll.y > 590 ) {
         // Studs nere
         boll.yspeed = -Math.abs(boll.yspeed);
     }
@@ -94,9 +134,9 @@ function flytta_boll () {
     boll.y += boll.yspeed;
     boll.svgboll.setAttribute("x", boll.x);
     boll.svgboll.setAttribute("y", boll.y);
-    window.setTimeout(flytta_boll, 20);
+    window.setTimeout(flytta_paddel, 30);
 }
-flytta_boll();
+flytta_paddel();
 function speedup() {
     boll.xspeed *= 1.5;
     boll.yspeed *= 1.5;
