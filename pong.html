@@ -10,7 +10,7 @@
     xmlns="http://www.w3.org/2000/svg"
     width="1200"
     height="600"
-    viewport="100 100 800 600">
+    viewport="0 0 1200 600">
   <defs>
   </defs>
   <rect x="100" y="50" height="550" width="1200" id="plan"/>
@@ -47,6 +47,7 @@ window.onkeydown = function (e) {
             rpad.speed = 0;
             rpad.y = rpad.ymin;
         }
+        console.log(rpad.y);
         break;
         case 40:
         if (rpad.y <= rpad.ymax) {
@@ -55,6 +56,7 @@ window.onkeydown = function (e) {
             rpad.speed = 0;
             rpad.y = rpad.ymax;
         }
+        console.log(rpad.y);
         break;
 
         case 87:
@@ -84,9 +86,9 @@ window.onkeydown = function (e) {
 var boll = {
     x : 650,
     y : 350,
-    xspeed: 3,
-    yspeed: 4,
-    totspeed : 5,
+    xspeed: 5,
+    yspeed: 6,
+    totspeed : 7,
     svgboll : document.getElementById("boll"),
     inplay : true
 };
@@ -107,6 +109,9 @@ function flytta_paddel () {
     if ( boll.x < 125 ) {
         return false;
 }
+    if ( boll.x > 1150 ) {
+        return false;
+}
   if ( boll.x < 165 && boll.xspeed < 0 ) {
         if ( boll.inplay && (boll.xspeed < 0) &&  (+boll.y + 10) >= lpad.y && boll.y < (+lpad.y + 100) ) {
             var hitpoint = boll.y - lpad.y - 45;
@@ -119,10 +124,20 @@ function flytta_paddel () {
             // Vänster spelare missar
             boll.inplay = false;
         }
-    } else if ( boll.x > 1200 ) {
-        // Höger miss
-        boll.xspeed = -Math.abs(boll.xspeed);
-    }
+    } 
+      if ( boll.x > 1110 && boll.xspeed > 0 ) {
+        if ( boll.inplay && (boll.xspeed > 0) &&  (+boll.y + 10) >= rpad.y && boll.y < (+rpad.y + 100) ) {
+            hitpoint = boll.y - rpad.y - 45;
+            debug.innerHTML = hitpoint;
+            // mellan 20 och 70 grader
+            hitpoint = Math.PI * hitpoint / 150;
+            boll.xspeed = -Math.cos(hitpoint) * boll.totspeed;
+            boll.yspeed = Math.sin(hitpoint) * boll.totspeed;
+        } else {
+            // Höger spelare missar
+            boll.inplay = false;
+        }
+    } 
     if ( boll.y < 50 ) {
         // studs uppe
         boll.yspeed = Math.abs(boll.yspeed);
