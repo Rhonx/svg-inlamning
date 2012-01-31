@@ -20,6 +20,8 @@
   <polyline points="100,600 1200,600" class="ram" />
   <rect x="250" y="275" height="10" width="10" id="boll" />      
   <line y1="50" x1="650" y2="600" x2="650" id="mitt" />
+  <text id="res1" y="580" x="190"></text>
+  <text id="res2" y="580" x="660"></text>
 </svg>
 <div id="debug">
 </div>  
@@ -28,14 +30,14 @@ var lpad = {
     y : 275,
     speed : 0,
     dom  : document.getElementById("paddel1"),
-    ymax : 500,
+    ymax : 490,
     ymin : 60
 };
 var rpad = {
     y : 275,
     speed : 0,
     dom  : document.getElementById("paddel2"),
-    ymax : 500,
+    ymax : 490,
     ymin : 60,
 };
 window.onkeydown = function (e) {
@@ -43,22 +45,19 @@ window.onkeydown = function (e) {
         case 38:
         if (rpad.y >= rpad.ymin) {
             rpad.speed = (rpad.speed > 0 ) ? 0 : rpad.speed - 8;
-        } else {
-            rpad.speed = 0;
-            rpad.y = rpad.ymin;
+            } else {
+                rpad.speed = 0;
+                rpad.y = rpad.ymin;
         }
-        console.log(rpad.y);
         break;
         case 40:
         if (rpad.y <= rpad.ymax) {
             rpad.speed = (rpad.speed < 0 ) ? 0 : rpad.speed + 8;
-        } else {
-            rpad.speed = 0;
-            rpad.y = rpad.ymax;
+                } else {
+                rpad.speed = 0;
+                rpad.y = rpad.ymax;
         }
-        console.log(rpad.y);
         break;
-
         case 87:
         if (lpad.y >= lpad.ymin) {
             // Om paddeln är på väg åt andra hållet stanna den
@@ -72,12 +71,12 @@ window.onkeydown = function (e) {
         case 83:
         if (lpad.y <= lpad.ymax) {
             lpad.speed = (lpad.speed < 0 ) ? 0 : lpad.speed + 8;
-        } else {
-            rpad.speed = 0;
-            rpad.y = rpad.ymax;
-        }
+                } else {
+                rpad.speed = 0;
+                rpad.y = rpad.ymax;
+        }   
         break;
-    }
+}
     // lpad.dom.setAttribute("y", lpad.y);
     // rpad.dom.setAttribute("y", rpad.y);
     // return false;
@@ -86,9 +85,9 @@ window.onkeydown = function (e) {
 var boll = {
     x : 650,
     y : 350,
-    xspeed: 5,
-    yspeed: 6,
-    totspeed : 7,
+    xspeed: 6,
+    yspeed: 7,
+    totspeed : 8,
     svgboll : document.getElementById("boll"),
     inplay : true
 };
@@ -96,10 +95,20 @@ var debug = document.getElementById("debug");
 
 function flytta_paddel () {
     lpad.y += lpad.speed;
+    if ( lpad.y <= lpad.ymin ) {
+        lpad.y = lpad.ymin;
+        lpad.speed = 0;
+    }
+    lpad.y = ( lpad.y > lpad.ymax ) ? lpad.ymax : lpad.y;
     lpad.dom.setAttribute("y", lpad.y);
     lpad.speed /= 1.2;
     lpad.speed = Math.abs(lpad.speed) < 0.6 ? 0 : lpad.speed;
     rpad.y += rpad.speed;
+        if ( rpad.y <= rpad.ymin ) {
+        rpad.y = rpad.ymin;
+        rpad.speed = 0;
+    }
+    rpad.y = ( rpad.y > rpad.ymax ) ? rpad.ymax : rpad.y;
     rpad.dom.setAttribute("y", rpad.y);
     rpad.speed /= 1.2;
     rpad.speed = Math.abs(rpad.speed) < 0.6 ? 0 : rpad.speed;
@@ -107,9 +116,11 @@ function flytta_paddel () {
 
     //Kollissionsdetektorn
     if ( boll.x < 125 ) {
+        document.getElementById("res2").textContent = "Spelare höger vinner!";
         return false;
 }
     if ( boll.x > 1150 ) {
+        document.getElementById("res1").textContent = "Spelare vänster vinner!";
         return false;
 }
   if ( boll.x < 165 && boll.xspeed < 0 ) {
@@ -120,11 +131,11 @@ function flytta_paddel () {
             hitpoint = Math.PI * hitpoint / 150;
             boll.xspeed = Math.cos(hitpoint) * boll.totspeed;
             boll.yspeed = Math.sin(hitpoint) * boll.totspeed;
-        } else {
-            // Vänster spelare missar
-            boll.inplay = false;
+                } else {
+                // Vänster spelare missar
+                boll.inplay = false;
         }
-    } 
+} 
       if ( boll.x > 1110 && boll.xspeed > 0 ) {
         if ( boll.inplay && (boll.xspeed > 0) &&  (+boll.y + 10) >= rpad.y && boll.y < (+rpad.y + 100) ) {
             hitpoint = boll.y - rpad.y - 45;
@@ -133,18 +144,18 @@ function flytta_paddel () {
             hitpoint = Math.PI * hitpoint / 150;
             boll.xspeed = -Math.cos(hitpoint) * boll.totspeed;
             boll.yspeed = Math.sin(hitpoint) * boll.totspeed;
-        } else {
-            // Höger spelare missar
-            boll.inplay = false;
+                } else {
+                // Höger spelare missar
+                boll.inplay = false;
         }
-    } 
+} 
     if ( boll.y < 50 ) {
         // studs uppe
         boll.yspeed = Math.abs(boll.yspeed);
-    } else if ( boll.y > 590 ) {
-        // Studs nere
-        boll.yspeed = -Math.abs(boll.yspeed);
-    }
+        } else if ( boll.y > 590 ) {
+            // Studs nere
+            boll.yspeed = -Math.abs(boll.yspeed);
+            }
     boll.x += boll.xspeed;
     boll.y += boll.yspeed;
     boll.svgboll.setAttribute("x", boll.x);
@@ -156,7 +167,6 @@ function speedup() {
     boll.xspeed *= 1.5;
     boll.yspeed *= 1.5;
 }
-//window.setInterval(speedup, 1000);
 </script>
 </body>
 </html>
