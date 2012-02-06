@@ -5,6 +5,12 @@
     <link href="pong.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
+<div class="regler">
+<h1>Kontroller</h1>
+<p>Spelare Vänster</p><p>Upp = W Ner = S</p>
+<p>Spelare Höger</p><p>Upp = &uArr; Ner = &dArr;</p>
+</div>
+<input type="button" value="Nytt Spel" onClick="window.location.reload()"> <!-- Knapp för att uppdatera sidan och starta nytt spel -->
 <svg version="1.1"
     baseProfile="full"
     xmlns="http://www.w3.org/2000/svg"
@@ -40,6 +46,7 @@ var rpad = {
     ymax : 490,
     ymin : 60,
 };
+// paddlarnas värden
 window.onkeydown = function (e) {
         switch(e.keyCode) {
         case 38:
@@ -77,17 +84,14 @@ window.onkeydown = function (e) {
         }   
         break;
 }
-    // lpad.dom.setAttribute("y", lpad.y);
-    // rpad.dom.setAttribute("y", rpad.y);
-    // return false;
-    // Gunther was here (testing)
+// Case-satserna är till för att ange vilka knappar som skall få paddlarna och röra på sig och hur det skall rör på sig
 };
 var boll = {
     x : 650,
     y : 350,
-    xspeed: 6,
-    yspeed: 7,
-    totspeed : 8,
+    xspeed: 8,
+    yspeed: 9,
+    totspeed : 10,
     svgboll : document.getElementById("boll"),
     inplay : true
 };
@@ -164,9 +168,12 @@ function flytta_paddel () {
 }
 flytta_paddel();
 function speedup() {
-    boll.xspeed *= 1.5;
-    boll.yspeed *= 1.5;
+    boll.xspeed *= 1.05;
+    boll.yspeed *= 1.05;
+    boll.totspeed *= 1.05;
+    window.setTimeout(speedup, 3000);
 }
+speedup(); // speedup funtionen är till för att göra spelet svårar desto längre spelet pågår
 </script>
 </body>
 </html>

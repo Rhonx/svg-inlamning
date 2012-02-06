@@ -36,3 +36,10 @@ svg {
             fill: #00FF00;
             font-size: 50px;
 }
+#debug {
+            display: none;
+}
+.regler {
+            height: 50px;
+            float: bottom;        
+}
